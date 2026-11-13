@@ -1,0 +1,81 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Passenger {
+  - id : int
+  - name : string
+  - phone : string
+  - email : string
+  + Passenger(id, name, phone, email)
+  + id() : int
+  + name() : string
+  + display() : void
+}
+
+class Flight {
+  - id : int
+  - origin : string
+  - destination : string
+  - departure : string
+  - capacity : int
+  - price : double
+  + Flight(id, origin, destination, departure, capacity, price)
+  + id() : int
+  + capacity() : int
+  + price() : double
+  + display(placesRestantes) : void
+}
+
+class Reservation {
+  - id : int
+  - passengerId : int
+  - flightId : int
+  - status : ReservationStatus
+  - payment : PaymentStatus
+  + Reservation(id, passengerId, flightId)
+  + pay() : void
+  + cancel() : void
+  + active() : bool
+}
+
+class Agency {
+  - passengers : map<int, Passenger>
+  - flights : map<int, Flight>
+  - reservations : map<int, Reservation>
+  - nextPassengerId : int
+  - nextFlightId : int
+  - nextReservationId : int
+  + registerPassenger() : void
+  + addFlight() : void
+  + showAvailableFlights() : void
+  + searchFlights() : void
+  + makeReservation() : void
+  + recordPayment() : void
+  + cancelReservation() : void
+  + consultReservations() : void
+  + displayReservationInfo() : void
+}
+
+enum ReservationStatus {
+  CONFIRMED
+  CANCELLED
+}
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+Passenger "1" -- "0..*" Reservation : effectue
+Flight "1" -- "0..*" Reservation : concerne
+Agency "1" o-- "0..*" Passenger : gere
+Agency "1" o-- "0..*" Flight : gere
+Agency "1" o-- "0..*" Reservation : gere
+Reservation --> ReservationStatus
+Reservation --> PaymentStatus
+note bottom of Reservation
+  Une seule reservation par passager et par vol.
+  La reservation annulee libere la place.
+  Une reservation annulee ne peut pas etre payee.
+end note
+@enduml
